@@ -91,7 +91,8 @@ Say ""
 # -NoProfile skips PROFILE.ps1 (faster, no surprises).
 # -ExecutionPolicy Bypass since the temp file isn't signed.
 $pwshArgs = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $tempInstaller)
-$pwshExe = (Get-Command pwsh -ErrorAction SilentlyContinue) ?? (Get-Command powershell -ErrorAction SilentlyContinue)
+$pwshExe = Get-Command pwsh -ErrorAction SilentlyContinue
+if (-not $pwshExe) { $pwshExe = Get-Command powershell -ErrorAction SilentlyContinue }
 if (-not $pwshExe) {
     Say "[FAIL] Neither pwsh nor powershell on PATH (?!). Something is very broken." "Red"
     exit 1
