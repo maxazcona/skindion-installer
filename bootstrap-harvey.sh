@@ -1,12 +1,12 @@
-#!/usr/bin/env bash
-# bootstrap-harvey.sh — Public bootstrap for Skindion Harvey plugin install
+﻿#!/usr/bin/env bash
+# bootstrap-harvey.sh â€” Public bootstrap for Skindion Harvey plugin install
 # Usage: curl -sSL https://raw.githubusercontent.com/maxazcona/skindion-installer/main/bootstrap-harvey.sh | bash
 #
 # What this does:
 #   1. Verifies (and installs if missing) GitHub CLI via brew (macOS) or apt (Debian/Ubuntu)
 #   2. Verifies (and runs) gh auth login if not already authenticated
 #   3. Downloads the real install script from the private skindion-agents repo
-#      via authenticated gh api → writes to a temp file
+#      via authenticated gh api â†’ writes to a temp file
 #   4. Executes the real install script
 #
 # Lives in a PUBLIC repo so curl works without auth.
@@ -15,16 +15,16 @@ set -euo pipefail
 
 green="\033[1;32m"; yellow="\033[1;33m"; red="\033[1;31m"; cyan="\033[1;36m"; reset="\033[0m"
 say()  { printf "${cyan}%s${reset}\n" "$*"; }
-ok()   { printf "${green}✓${reset} %s\n" "$*"; }
-warn() { printf "${yellow}⚠ %s${reset}\n" "$*"; }
-fail() { printf "${red}✗ %s${reset}\n" "$*"; exit 1; }
+ok()   { printf "${green}âœ“${reset} %s\n" "$*"; }
+warn() { printf "${yellow}âš  %s${reset}\n" "$*"; }
+fail() { printf "${red}âœ— %s${reset}\n" "$*"; exit 1; }
 
 cat <<'BANNER'
 
-  ╭──────────────────────────────╮
-  │   SKINDION HARVEY  ✍️   │
-  │  bootstrapping installer...  │
-  ╰──────────────────────────────╯
+  â•­â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â•®
+  â”‚   SKINDION HARVEY  âœï¸   â”‚
+  â”‚  bootstrapping installer...  â”‚
+  â•°â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â•¯
 
 BANNER
 
