@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # bootstrap-harvey.sh â€” Public bootstrap for Skindion Harvey plugin install
 # Usage: curl -sSL https://raw.githubusercontent.com/maxazcona/skindion-installer/main/bootstrap-harvey.sh | bash
 #
@@ -28,13 +28,25 @@ cat <<'BANNER'
 
 BANNER
 
-# 1. Check / install gh CLI
+# 1. Check / install gh CLI (auto-install Homebrew first on Mac if missing)
 if ! command -v gh >/dev/null 2>&1; then
-    warn "[1/4] GitHub CLI (gh) not found. Attempting install..."
-    if command -v brew >/dev/null 2>&1; then
+    warn "[1/4] GitHub CLI (gh) not found. Setting up..."
+    OS_KIND="$(uname -s)"
+
+    if [ "$OS_KIND" = "Darwin" ]; then
+        # On Mac: install Homebrew first if missing (common on personal Macs)
+        if ! command -v brew >/dev/null 2>&1; then
+            warn "Homebrew not found. Installing it first (this will ask for your Mac password)..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            # Add brew to PATH for current session (Apple Silicon vs Intel)
+            if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
+            if [ -x /usr/local/bin/brew ];   then eval "$(/usr/local/bin/brew shellenv)"; fi
+            command -v brew >/dev/null 2>&1 || fail "Homebrew install completed but not on PATH. Close terminal, open a new one, re-run bootstrap."
+            ok "Homebrew installed"
+        fi
         brew install gh
     elif command -v apt-get >/dev/null 2>&1; then
-        # Debian/Ubuntu install per official docs
+        # Debian/Ubuntu per official docs
         type -p curl >/dev/null || sudo apt update && sudo apt install -y curl
         curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
             && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -42,9 +54,9 @@ if ! command -v gh >/dev/null 2>&1; then
             && sudo apt update \
             && sudo apt install -y gh
     else
-        fail "Cannot auto-install gh on this system. Install manually from https://cli.github.com/ and re-run."
+        fail "Cannot auto-install gh on this system ($OS_KIND). Install manually from https://cli.github.com/ and re-run."
     fi
-    command -v gh >/dev/null 2>&1 || fail "gh installed but not on PATH. Open a new terminal and re-run the bootstrap."
+    command -v gh >/dev/null 2>&1 || fail "gh installed but not on PATH. Close terminal, open a new one, re-run bootstrap."
 fi
 ok "[1/4] gh available ($(gh --version | head -1))"
 
